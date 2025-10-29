@@ -1,5 +1,5 @@
 # schema/pydantic model for req/res valdidation
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 class PostBase(BaseModel):  # api ka schema ( datatype ) 
@@ -15,5 +15,17 @@ class PostResponse(PostBase):
     created_at: datetime
 
 
-    class Config:    # convets sqlachemy model to dict
+    class Config:    # convets sqlachemy model to pydantic model/dict
+        orm_model = True
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
+    class Config:    # convets sqlachemy model to pydantic model/dict
         orm_model = True
