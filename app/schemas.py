@@ -29,3 +29,8 @@ class UserOut(BaseModel):
 
     class Config:    # convets sqlachemy model to pydantic model/dict
         orm_model = True
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+    
