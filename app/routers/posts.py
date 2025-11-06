@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session # this Session will be used in routs, to acce
 from .. import models, schemas, utils, oauth2
 from ..database import engine, get_db # engine establish connection btw db and orm 
 
-router=APIRouter( prefix="/posts",
+router=APIRouter( prefix="/posts",   #
                  tags=['Posts'])    # all the api will come under Posts section
 
 
@@ -44,7 +44,7 @@ def get_post(id:int, db: Session = Depends(get_db), user_id:int = Depends(oauth2
         
     return post
 
-@router.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
 
     del_post= db.query(models.Post).filter(models.Post.id == id)
@@ -63,7 +63,7 @@ def delete_post(id: int, db: Session = Depends(get_db), user_id:int = Depends(oa
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
   
-@router.put("/posts/{id}", response_model=schemas.PostResponse)
+@router.put("/{id}", response_model=schemas.PostResponse)
 def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
 
 
