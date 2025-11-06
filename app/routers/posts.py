@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Response,status,HTTPException,Depends, APIRouter
 from typing import Optional, List
 from sqlalchemy.orm import Session # this Session will be used in routs, to access db
-from .. import models, schemas, utils
+from .. import models, schemas, utils, oauth2
 from ..database import engine, get_db # engine establish connection btw db and orm 
 
 router=APIRouter( prefix="/posts",
@@ -10,16 +10,17 @@ router=APIRouter( prefix="/posts",
 
 
 @router.get("/", response_model=List[schemas.PostResponse])  # to get list of post, we will need List from typing
-def get_posts(db: Session = Depends(get_db)):
+def get_posts(db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
 
 
     posts=db.query(models.Post).all()
     return posts  #fastapi will automatically serialize my list to json
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse )
-def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
  
-    print(post.model_dump())
+    # print(post.model_dump())
+    print(user_id)
     
     new_post = models.Post(**post.model_dump()) # unpacking list (**) ... since schema match with db 
     db.add(new_post)  #execute query
@@ -31,7 +32,7 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{id}", response_model=schemas.PostResponse ) #{id} is a path parameter
-def get_post(id:int, db: Session = Depends(get_db)):  #fastapi automatically extract id , and pydantic validating it
+def get_post(id:int, db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):  #fastapi automatically extract id , and pydantic validating it
 
 
     post= db.query(models.Post).filter(models.Post.id == id).first()
@@ -44,7 +45,7 @@ def get_post(id:int, db: Session = Depends(get_db)):  #fastapi automatically ext
     return post
 
 @router.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(get_db)):
+def delete_post(id: int, db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
 
     del_post= db.query(models.Post).filter(models.Post.id == id)
 
@@ -63,7 +64,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
   
 @router.put("/posts/{id}", response_model=schemas.PostResponse)
-def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db)):
+def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
 
 
     post_query = db.query(models.Post).filter(models.Post.id == id)  # for checking wether id exist nor not
