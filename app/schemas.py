@@ -11,10 +11,19 @@ class PostBase(BaseModel):  # api ka schema ( datatype )
 class PostCreate(PostBase):
     pass
 
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
+    class Config:    # convets sqlachemy model to pydantic model/dict
+        orm_model = True
+
 class PostResponse(PostBase):
     id: int
     created_at: datetime
     owner_id: int
+    owner: UserOut    # tell who created post
 
 
     class Config:    # convets sqlachemy model to pydantic model/dict
@@ -24,13 +33,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
-class UserOut(BaseModel):
-    id: int
-    email: EmailStr
-    created_at: datetime
 
-    class Config:    # convets sqlachemy model to pydantic model/dict
-        orm_model = True
 
 class UserLogin(BaseModel):
     email: EmailStr
