@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from .database import Base
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
@@ -12,6 +12,8 @@ class Post(Base):           # model name in python
     # published = Column (Boolean, default=True) default= Ture will not work in postgres
     published = Column ( Boolean, server_default='TRUE', nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)
+    owner_id = Column( Integer, ForeignKey("users.id", ondelete="CASCADE"), 
+                      nullable=False)
 
 class User(Base):
     __tablename__ = "users"
@@ -20,4 +22,4 @@ class User(Base):
     email = Column ( String, nullable=False, unique=True)
     password = Column ( String, nullable = False )
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)
-
+ 
