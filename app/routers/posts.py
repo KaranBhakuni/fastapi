@@ -8,15 +8,16 @@ router=APIRouter( prefix="/posts",   #
                  tags=['Posts'])    # all the api will come under Posts section
 
 
+# domain/route?1st_query&2nd_query_para  dont use string in search para // use %20 for space
 
 @router.get("/", response_model=List[schemas.PostResponse])  # to get list of post, we will need List from typing
-def get_posts(db: Session = Depends(get_db), current_user:int = Depends(oauth2.get_current_user)):
+def get_posts(db: Session = Depends(get_db), current_user:int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0 , search:Optional[str]=""):
 
 
-    posts=db.query(models.Post).all()
+    posts=db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     return posts  #fastapi will automatically serialize my list to json
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse )
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), current_user:int = Depends(oauth2.get_current_user)):
  
     # print(post.model_dump())
