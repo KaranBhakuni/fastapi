@@ -1,7 +1,10 @@
 # schema/pydantic model for req/res valdidation
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Annotated
+
+# from pydantic.types import conint
+
 
 class PostBase(BaseModel):  # api ka schema ( datatype ) 
     title: str
@@ -48,3 +51,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+class vote(BaseModel):
+    post_id: int
+    # dir: conint(ge=0, le=1)  # ge = greater or equal, le = less or equal, 
+    dir: Annotated[int, Field(ge=0, le=1)]
