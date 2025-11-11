@@ -52,7 +52,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
 
-class vote(BaseModel):
+class Vote(BaseModel):
     post_id: int
-    # dir: conint(ge=0, le=1)  # ge = greater or equal, le = less or equal, 
+    # dir: conint(ge=0, le=1)  # ge = greater or equal, le = less or equal, coint will be deprecated in v3 pydantic
     dir: Annotated[int, Field(ge=0, le=1)]
