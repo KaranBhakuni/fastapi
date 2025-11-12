@@ -20,7 +20,8 @@ class UserOut(BaseModel):
     created_at: datetime
 
     class Config:    # convets sqlachemy model to pydantic model/dict
-        orm_model = True
+        # orm_model = True
+        from_attributes = True
 
 class PostResponse(PostBase):
     id: int
@@ -30,7 +31,8 @@ class PostResponse(PostBase):
 
 
     class Config:    # convets sqlachemy model to pydantic model/dict
-        orm_model = True
+        # orm_model = True
+        from_attributes = True
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -57,9 +59,16 @@ class Vote(BaseModel):
     # dir: conint(ge=0, le=1)  # ge = greater or equal, le = less or equal, coint will be deprecated in v3 pydantic
     dir: Annotated[int, Field(ge=0, le=1)]
 
-class PostOut(PostBase):   # validate no of votes
+# class PostOut(PostBase):   # validate no of votes
+#     Post: PostResponse
+#     votes: int
+
+#     class Config:
+#         orm_mode = True
+
+class PostOut(BaseModel):
     Post: PostResponse
     votes: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # replaces orm_mode
