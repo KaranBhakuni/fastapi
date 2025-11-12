@@ -56,3 +56,10 @@ class Vote(BaseModel):
     post_id: int
     # dir: conint(ge=0, le=1)  # ge = greater or equal, le = less or equal, coint will be deprecated in v3 pydantic
     dir: Annotated[int, Field(ge=0, le=1)]
+
+class PostOut(PostBase):   # validate no of votes
+    Post: PostResponse
+    votes: int
+
+    class Config:
+        orm_mode = True
